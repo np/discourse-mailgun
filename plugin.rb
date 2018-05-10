@@ -40,9 +40,8 @@ after_initialize do
   require_dependency "application_controller"
 
   class DiscourseMailgun::MailgunController < ::ApplicationController
-    skip_before_action :check_xhr, :preload_json, :redirect_to_login_if_required
-    requires_login except: [:incoming]
-   #before_action :verify_signature
+    skip_before_action :redirect_to_login_if_required
+    before_action :verify_signature
 
     def incoming
       mg_body    = params['body-plain']
@@ -72,10 +71,6 @@ after_initialize do
     # we mark this controller as an API
     # in order to skip CSRF and other discourse filters
     def is_api?
-      true
-    end
-
-    def is_user_api?
       true
     end
 
