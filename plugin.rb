@@ -41,8 +41,8 @@ after_initialize do
 
   class DiscourseMailgun::MailgunController < ::ApplicationController
     skip_before_action :redirect_to_login_if_required
-    requires_login except: [:incoming]
-    before_action :verify_signature
+   #requires_login except: [:incoming]
+   #before_action :verify_signature
 
     def incoming
       mg_body    = params['body-plain']
