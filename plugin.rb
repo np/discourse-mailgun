@@ -40,7 +40,7 @@ after_initialize do
   require_dependency "application_controller"
 
   class DiscourseMailgun::MailgunController < ::ApplicationController
-    skip_before_action :check_xhr, :preload_json
+    skip_before_action :check_xhr, :preload_json, :redirect_to_login_if_required
     requires_login except: [:incoming]
    #before_action :verify_signature
 
