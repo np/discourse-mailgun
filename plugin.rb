@@ -42,7 +42,7 @@ after_initialize do
   class DiscourseMailgun::MailgunController < ::ApplicationController
     skip_before_action :redirect_to_login_if_required
    #requires_login except: [:incoming]
-   #before_action :verify_signature
+    before_action :verify_signature
 
     def incoming
       mg_body    = params['body-plain']
@@ -78,7 +78,11 @@ after_initialize do
     private
 
     def verify_signature
-      unless ::DiscourseMailgun::Engine.verify_signature(params['timestamp'], params['token'], params['signature'], SiteSetting.mailgun_api_key)
+      timestamp = params['timestamp']
+      token = params['token']
+      signature = params['signature']
+      valid_signature = ::DiscourseMailgun::Engine.verify_signature(timestamp, token, signature, SiteSetting.mailgun_api_key)
+      unless (Time.at(timestamp.to_i) - Time.now).abs < 24.hours.to_i and valid_signature
         render json: {}, :status => :unauthorized
       end
     end
