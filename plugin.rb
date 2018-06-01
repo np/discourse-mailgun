@@ -50,7 +50,13 @@ after_initialize do
       mg_to      = params['To']
       mg_from    = params['From']
       mg_date    = params['Date']
-      mg_atts    = params['attachment-count'] || 0
+      mg_atts    = []
+
+      for i in 1 .. (params['attachment-count'] || 0).to_i do
+        att =
+        mg_atts << params["attachment-#{i}"]
+        add_file filename: att.original_filename, content: att.read
+      end
 
       m = Mail::Message.new do
         to      mg_to
@@ -58,9 +64,7 @@ after_initialize do
         date    mg_date
         subject mg_subj
         body    mg_body
-
-        for i in 1 .. mg_atts.to_i do
-          att = params["attachment-#{i}"]
+        for att in mg_atts do
           add_file filename: att.original_filename, content: att.read
         end
       end
