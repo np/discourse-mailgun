@@ -53,9 +53,7 @@ after_initialize do
       mg_atts    = []
 
       for i in 1 .. (params['attachment-count'] || 0).to_i do
-        att =
         mg_atts << params["attachment-#{i}"]
-        add_file filename: att.original_filename, content: att.read
       end
 
       m = Mail::Message.new do
